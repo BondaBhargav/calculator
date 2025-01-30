@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-
+import "./App.css"
 const App = () => {
 const [inputval,setinputval]=useState("")
 
@@ -7,7 +7,11 @@ const [inputval,setinputval]=useState("")
 const changeinputval=(e,each)=>{
   
 let keyEle=document.getElementById(each).textContent
-try{if(keyEle==="="){
+try{
+  
+  
+  
+if(keyEle==="="){
 
 let val=eval(inputval)
 setinputval(val)
@@ -23,39 +27,35 @@ else{
   setinputval(prev=>prev+keyEle)
 }}
 catch(error){
-setinputval("undefined")
+setinputval("error")
 
 }
 
 
 }
-const onchangeInputBox=(e)=>{
+const onchangeInputBox = (e) => {
+  let keyEle = e.key;
+  
 
-  let keyEle=e.key
-  
-  console.log(e.key)
-  try{if(keyEle==="="||keyEle==="Enter"){
-  
-  let val=eval(inputval)
-  setinputval(val)
-  }
-  else if(keyEle==="delete"){
-    setinputval("")
-  }
-  else if(keyEle==="Backspace"){
-  let AfterDElVAl=inputval.toString().substring(0,inputval.length-1)
-  setinputval(AfterDElVAl)
-  }
-  else{
-    setinputval(prev=>prev+keyEle)
-  }}
-  catch(error){
-  setinputval("undefined")
-  
+  if (!/[\d+\-*/.=]|Backspace|Enter|Delete/.test(keyEle)) {
+    e.preventDefault();
+    return;
   }
 
-
-}
+  try {
+    if (keyEle === "=" || keyEle === "Enter") {
+      setinputval(eval(inputval)); // Evaluate expression
+    } else if (keyEle === "Backspace") {
+      setinputval(inputval.slice(0, -1)); // Remove last character
+    } else if (keyEle === "Delete") {
+      setinputval(""); // Clear input
+    } else {
+      setinputval((prev) => prev + keyEle); // Append character
+    }
+  } catch (error) {
+    setinputval("Error");
+  }
+};
 
 const btnclass=(val)=>{
     console.log(val)
@@ -80,9 +80,9 @@ default:
 
   const arry=["AC","DEL","+/-","/",7,8,9,"*",4,5,6,"-",1,2,3,"+","%",0,".","="]
   return (
-    <div className='contianer d-flex justify-content-center align-items-center mt-5 cal-main'>
+    <div className='contianer d-flex flex-column  justify-content-center align-items-center mt-5 cal-main'>
        
-
+<h1 className='masked-text '>caluculator</h1>
 <div className='d-flex row col-10 col-lg-5 justify-content-center bg-info cal-b'> 
   <input value={inputval} className='form-control ' onKeyDown={(e)=>onchangeInputBox(e)} />
 {arry.map(each=>(<button className={`col-3 border cal-box btn ${btnclass(each)}`} key={each} id={each} onClick={(e)=>{changeinputval(e,each)}}>{each}</button>))}
